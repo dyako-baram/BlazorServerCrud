@@ -51,7 +51,7 @@ namespace BlazorServerUi.Data
             string ConnectionString = _configuration.GetConnectionString("Default");
             using (IDbConnection con = new SqlConnection(ConnectionString))
             {
-                await con.ExecuteAsync("Update PersonTable set FullName=@fullName, set DOB=@dOb,set Email=@email,set Gender=@gender where Id=@id", new {pm.FullName,pm.Email,pm.DOB,pm.Gender,pm.Id });
+                await con.ExecuteAsync("Update PersonTable set FullName=@fullName, DOB=@dOb,Email=@email,Gender=@gender where Id=@id", new {pm.FullName,pm.Email,pm.DOB,pm.Gender,pm.Id });
 
             }
         }
