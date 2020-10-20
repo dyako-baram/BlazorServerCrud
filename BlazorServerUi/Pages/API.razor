@@ -1,0 +1,47 @@
+﻿@page "/api"
+<h3>API</h3>
+@using BlazorServerUi.Models
+
+@if (res == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>UserId</th>
+            <th>Id</th>
+            <th>Title</th>
+            <th>Body</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var api in res)
+    {
+        <tr>
+        <td>@api.UserId</td>
+        <td>@api.Id</td>
+        <td>@api.Title</td>
+        <td>@api.Body</td>
+        </tr>
+    }
+
+
+    </tbody>
+</table>
+}
+
+@code {
+    private readonly HttpClient client = new HttpClient();
+    private List<ApiModel> res =new List<ApiModel>();
+    //JsonConvert.DeserializeObject<Movie>(json);
+    protected override async Task OnInitializedAsync()
+    {
+        string responseBody =await client.GetStringAsync("https://jsonplaceholder.typicode.com/posts");
+        //res= JsonSerializer.Deserialize<List<ApiModel>>(responseBody);
+        res = Newtonsoft.Json.JsonConvert.DeserializeObject<List<ApiModel>>(responseBody);
+
+    }
+}
