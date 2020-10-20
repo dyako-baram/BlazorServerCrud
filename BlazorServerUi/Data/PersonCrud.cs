@@ -37,6 +37,24 @@ namespace BlazorServerUi.Data
 
             }
         }
+        public async Task DeletePerson(Guid guid)
+        {
+            string ConnectionString = _configuration.GetConnectionString("Default");
+            using (IDbConnection con = new SqlConnection(ConnectionString))
+            {
+                await con.ExecuteAsync("delete from PersonTable where Id=@id", new { id = guid });
+
+            }
+        }
+        public async Task UpdatePerson(PersonModel pm)
+        {
+            string ConnectionString = _configuration.GetConnectionString("Default");
+            using (IDbConnection con = new SqlConnection(ConnectionString))
+            {
+                await con.ExecuteAsync("Update PersonTable set FullName=@fullName, set DOB=@dOb,set Email=@email,set Gender=@gender where Id=@id", new {pm.FullName,pm.Email,pm.DOB,pm.Gender,pm.Id });
+
+            }
+        }
 
     }
 }

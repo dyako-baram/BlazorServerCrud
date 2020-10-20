@@ -2,6 +2,7 @@
 @using BlazorServerUi.Models
 @inject BlazorServerUi.Data.IPersonCrud pc
 <h3>Person</h3>
+
 <h4>Insert person</h4>
 <EditForm Model="SinglePerson" OnValidSubmit="ValidSubmit">
     <DataAnnotationsValidator />
@@ -13,8 +14,8 @@
 
     <button type="submit" class="btn btn-outline-primary">Submit</button>
 </EditForm>
-
-
+<hr />
+<Update SinglePerson1="personUpdate"/>
 
 @if (person == null)
 {
@@ -24,23 +25,23 @@ else
     {
 <table class="table">
     <thead>
-        <tr>
-            <th>Id</th>
+        <tr >
             <th>Full Name</th>
             <th>Email</th>
             <th>Date Of Birth</th>
             <th>Gender</th>
+            <th>Action</th>
         </tr>
     </thead>
     <tbody>
         @foreach (var p in person)
         {
-            <tr>
-                <td>@p.Id</td>
+            <tr @onclick="()=>Data(p)">
                 <td>@p.FullName</td>
                 <td>@p.Email</td>
                 <td>@p.DOB</td>
                 <td>@p.Gender</td>
+                <td><button class="btn btn-outline-danger" @onclick="()=>Delete(p.Id)">Remove</button></td>
             </tr>
         }
     </tbody>
@@ -48,7 +49,18 @@ else
 }
 @code {
     private List<PersonModel> person;
-    private PersonModel SinglePerson = new PersonModel();
+    public PersonModel SinglePerson = new PersonModel();
+    private PersonModel personUpdate =new PersonModel();
+
+    public void Data(PersonModel pm)
+    {
+        personUpdate.Id= pm.Id;
+        personUpdate.FullName = pm.FullName;
+        personUpdate.Email= pm.Email;
+        personUpdate.DOB= pm.DOB;
+        personUpdate.Gender= pm.Gender;
+    }
+
     protected override async  Task OnInitializedAsync()
     {
         person = await pc.LoadPeople();
@@ -56,6 +68,12 @@ else
     public async Task ValidSubmit()
     {
         await pc.InsertPerson(SinglePerson);
+        person = await pc.LoadPeople();
+        SinglePerson = new PersonModel();
+    }
+    public async Task Delete(Guid guid)
+    {
+        await pc.DeletePerson(guid);
         person = await pc.LoadPeople();
     }
 

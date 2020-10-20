@@ -1,0 +1,33 @@
+﻿<h3>Update</h3>
+@inject BlazorServerUi.Data.IPersonCrud pc
+<EditForm Model="SinglePerson1" OnValidSubmit="ValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    <InputText id="FullName" @bind-Value="SinglePerson1.FullName" />
+    <InputText id="Email" @bind-Value="SinglePerson1.Email" />
+    <InputText id="Gender" @bind-Value="SinglePerson1.Gender" />
+    <InputDate id="DOB" @bind-Value="SinglePerson1.DOB" />
+
+    <button type="submit" class="btn btn-outline-primary">Submit</button>
+</EditForm>
+
+@code {
+    [Parameter]
+    public BlazorServerUi.Models.PersonModel SinglePerson1 { get; set; }
+    private BlazorServerUi.Models.PersonModel SinglePerson;
+
+
+
+    private async Task ValidSubmit()
+    {
+        BlazorServerUi.Models.PersonModel SinglePerson = new Models.PersonModel()
+        {
+            Id = SinglePerson1.Id,
+            FullName = SinglePerson1.FullName,
+            Email = SinglePerson1.Email,
+            DOB = SinglePerson1.DOB,
+            Gender = SinglePerson1.Gender
+        };
+        await pc.UpdatePerson(SinglePerson);
+    }
+}
