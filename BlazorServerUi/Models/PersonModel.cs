@@ -9,6 +9,7 @@ namespace BlazorServerUi.Models
     public class PersonModel
     {
         public Guid Id { get; set; }
+
         [Required(ErrorMessage = "Full Name is Required")]
         [Display(Name = "Full Name")]
         public string FullName { get; set; }

@@ -1,0 +1,62 @@
+﻿@page "/person"
+@using BlazorServerUi.Models
+@inject BlazorServerUi.Data.IPersonCrud pc
+<h3>Person</h3>
+<h4>Insert person</h4>
+<EditForm Model="SinglePerson" OnValidSubmit="ValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary/>
+    <InputText id="FullName" @bind-Value="SinglePerson.FullName"/>
+    <InputText  id="Email" @bind-Value="SinglePerson.Email"/>
+    <InputText  id="Gender" @bind-Value="SinglePerson.Gender"/>
+    <InputDate id="DOB" @bind-Value="SinglePerson.DOB"/>
+
+    <button type="submit" class="btn btn-outline-primary">Submit</button>
+</EditForm>
+
+
+
+@if (person == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+    {
+<table class="table">
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Date Of Birth</th>
+            <th>Gender</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var p in person)
+        {
+            <tr>
+                <td>@p.Id</td>
+                <td>@p.FullName</td>
+                <td>@p.Email</td>
+                <td>@p.DOB</td>
+                <td>@p.Gender</td>
+            </tr>
+        }
+    </tbody>
+</table>
+}
+@code {
+    private List<PersonModel> person;
+    private PersonModel SinglePerson = new PersonModel();
+    protected override async  Task OnInitializedAsync()
+    {
+        person = await pc.LoadPeople();
+    }
+    public async Task ValidSubmit()
+    {
+        await pc.InsertPerson(SinglePerson);
+        person = await pc.LoadPeople();
+    }
+
+}
